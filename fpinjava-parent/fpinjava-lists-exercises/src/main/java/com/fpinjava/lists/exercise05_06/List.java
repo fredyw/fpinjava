@@ -63,12 +63,12 @@ public abstract class List<A> {
 
     @Override
     public List<A> reverse() {
-      throw new RuntimeException("To be implemented");
+      return this;
     }
 
     @Override
     public List<A> init() {
-      throw new RuntimeException("To be implemented");
+      throw new IllegalStateException("init called on an empty list");
     }
   }
 
@@ -136,12 +136,19 @@ public abstract class List<A> {
 
     @Override
     public List<A> reverse() {
-      throw new RuntimeException("To be implemented");
+      return reverse(this, list()).eval();
+    }
+
+    private TailCall<List<A>> reverse(List<A> list, List<A> acc) {
+      if (list.isEmpty()) {
+        return ret(acc);
+      }
+      return reverse(list.tail(), new Cons<>(list.head(), acc));
     }
 
     @Override
     public List<A> init() {
-      throw new RuntimeException("To be implemented");
+      return this.reverse().tail().reverse();
     }
   }
 
