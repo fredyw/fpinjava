@@ -5,14 +5,14 @@ import com.fpinjava.lists.exercise05_10.List;
 public class SumProductLength {
 
   public static Integer sumViaFoldLeft(List<Integer> list) {
-    throw new RuntimeException("To be implemented");
+    return list.foldLeft(0, a -> b -> a + b);
   }
 
   public static Double productViaFoldLeft(List<Double> list) {
-    throw new RuntimeException("To be implemented");
+    return list.foldLeft(1.0, a -> b -> a * b);
   }
 
   public static <A> Integer lengthViaFoldLeft(List<A> list) {
-    throw new RuntimeException("To be implemented");
+    return list.foldLeft(0, a -> b -> a + 1);
   }
 }
