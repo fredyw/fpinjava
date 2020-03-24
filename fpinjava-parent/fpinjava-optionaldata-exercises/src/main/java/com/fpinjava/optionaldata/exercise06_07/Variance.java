@@ -10,10 +10,14 @@ import static com.fpinjava.common.TailCall.*;
 
 public class Variance {
 
-  static Function<List<Double>, Double> sum = null; // Implement this function
+  static Function<List<Double>, Double> sum = list -> list.reduce(x -> y -> x + y);
 
-  static Function<List<Double>, Option<Double>> mean = null; // Implement this function
+  static Function<List<Double>, Option<Double>> mean =
+      list -> list.isEmpty() ?
+          Option.none() :
+          Option.some(sum.apply(list) / list.length());
 
-  static Function<List<Double>, Option<Double>> variance = null; // Implement this function
+  static Function<List<Double>, Option<Double>> variance =
+      list -> mean.apply(list).flatMap(m -> mean.apply(list.map(x -> Math.pow(x - m, 2))));
 }
 
