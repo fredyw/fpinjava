@@ -125,7 +125,8 @@ public abstract class Option<A> {
   }
 
   public static <A> Option<List<A>> sequence(List<Option<A>> list) {
-    throw new IllegalStateException("Not implemented yet");
+    return list.foldRight(some(List.list()), x -> y ->
+        x.flatMap(a -> y.map(b -> b.cons(a))));
   }
 
 }
