@@ -16,7 +16,7 @@ public abstract class Either<E, A> {
     }
 
     public <B> Either<E, B> map(Function<A, B> f) {
-      throw new RuntimeException("To be implemented");
+      return Either.left(value);
     }
 
     @Override
@@ -34,7 +34,7 @@ public abstract class Either<E, A> {
     }
 
     public <B> Either<E, B> map(Function<A, B> f) {
-      throw new RuntimeException("To be implemented");
+      return Either.right(f.apply(value));
     }
 
     @Override
