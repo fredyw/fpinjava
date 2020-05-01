@@ -20,7 +20,7 @@ public abstract class Result<V> implements Serializable {
   public abstract <U> Result<U> flatMap(Function<V, Result<U>> f);
 
   public Result<V> orElse(Supplier<Result<V>> defaultValue) {
-    throw new RuntimeException("To be implemented");
+    return map(a -> this).getOrElse(defaultValue);
   }
 
   private static class Failure<V> extends Result<V> {
@@ -49,22 +49,22 @@ public abstract class Result<V> implements Serializable {
 
     @Override
     public V getOrElse(V defaultValue) {
-      throw new RuntimeException("To be implemented");
+      return defaultValue;
     }
 
     @Override
     public V getOrElse(Supplier<V> defaultValue) {
-      throw new RuntimeException("To be implemented");
+      return defaultValue.get();
     }
 
     @Override
     public <U> Result<U> map(Function<V, U> f) {
-      throw new RuntimeException("To be implemented");
+      return Result.failure(exception);
     }
 
     @Override
     public <U> Result<U> flatMap(Function<V, Result<U>> f) {
-      throw new RuntimeException("To be implemented");
+      return Result.failure(exception);
     }
   }
 
@@ -84,22 +84,22 @@ public abstract class Result<V> implements Serializable {
 
     @Override
     public V getOrElse(V defaultValue) {
-      throw new RuntimeException("To be implemented");
+      return value;
     }
 
     @Override
     public V getOrElse(Supplier<V> defaultValue) {
-      throw new RuntimeException("To be implemented");
+      return value;
     }
 
     @Override
     public <U> Result<U> map(Function<V, U> f) {
-      throw new RuntimeException("To be implemented");
+      return Result.success(f.apply(value));
     }
 
     @Override
     public <U> Result<U> flatMap(Function<V, Result<U>> f) {
-      throw new RuntimeException("To be implemented");
+      return f.apply(value);
     }
   }
 
