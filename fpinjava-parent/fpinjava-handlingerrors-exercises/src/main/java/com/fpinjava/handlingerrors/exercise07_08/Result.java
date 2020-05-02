@@ -234,18 +234,26 @@ public abstract class Result<T> implements Serializable {
   }
 
   public static <T> Result<T> of(T value) {
-    throw new RuntimeException("To be implemented");
+    return value == null ? empty() : success(value);
   }
 
   public static <T> Result<T> of(T value, String message) {
-    throw new RuntimeException("To be implemented");
+    return  value == null ? failure(message) : success(value);
   }
 
   public static <T> Result<T> of(Function<T, Boolean> predicate, T value) {
-    throw new RuntimeException("To be implemented");
+    try {
+      return predicate.apply(value) ? success(value) : empty();
+    } catch (Exception e) {
+      return failure("Exception while evaluating predicate: " + value);
+    }
   }
 
   public static <T> Result<T> of(Function<T, Boolean> predicate, T value, String message) {
-    throw new RuntimeException("To be implemented");
+    try {
+      return predicate.apply(value) ? success(value) : failure(message);
+    } catch (Exception e) {
+      return failure("Exception while evaluating predicate: " + message);
+    }
   }
 }
