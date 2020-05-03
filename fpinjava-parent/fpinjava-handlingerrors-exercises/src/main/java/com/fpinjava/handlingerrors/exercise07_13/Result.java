@@ -367,10 +367,10 @@ public abstract class Result<T> implements Serializable {
   }
 
   public static <A, B, C> Function<Result<A>, Function<Result<B>, Result<C>>> lift2(Function<A, Function<B, C>> f) {
-    throw new RuntimeException("To be implemented");
+    return x -> y -> x.flatMap(a -> y.map(b -> f.apply(a).apply(b)));
   }
 
   public static <A, B, C, D> Function<Result<A>, Function<Result<B>, Function<Result<C>, Result<D>>>> lift3(Function<A, Function<B, Function<C, D>>> f) {
-    throw new RuntimeException("To be implemented");
+    return x -> y -> z -> x.flatMap(a -> y.flatMap(b -> z.map(c -> f.apply(a).apply(b).apply(c))));
   }
 }
