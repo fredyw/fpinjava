@@ -103,7 +103,7 @@ public abstract class Result<T> implements Serializable {
 
     @Override
     public void forEachOrThrow(Effect<T> ef) {
-      forEach(ef);
+      // Do nothing
     }
 
     @Override
@@ -238,7 +238,7 @@ public abstract class Result<T> implements Serializable {
 
     @Override
     public void forEachOrThrow(Effect<T> ef) {
-      forEach(ef);
+      ef.apply(value);
     }
   }
 
