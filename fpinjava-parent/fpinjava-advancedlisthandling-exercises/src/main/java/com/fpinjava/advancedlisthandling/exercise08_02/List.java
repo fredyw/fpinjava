@@ -244,7 +244,7 @@ public abstract class List<A> {
 
     @Override
     public Result<A> headOption() {
-      return Result.of(head());
+      return Result.success(head());
     }
   }
 
