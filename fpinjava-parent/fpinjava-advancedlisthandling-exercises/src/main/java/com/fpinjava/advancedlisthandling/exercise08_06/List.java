@@ -272,6 +272,6 @@ public abstract class List<A> {
   }
 
   public static <A> Result<List<A>> sequence(List<Result<A>> list) {
-    throw new IllegalStateException("To be implemented");
+    return list.foldRight(Result.success(list()), a -> b -> b.flatMap(c -> a.map(d -> c.cons(d))));
   }
 }
