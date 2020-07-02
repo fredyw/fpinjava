@@ -111,7 +111,20 @@ public abstract class List<A> {
   }
 
   public Tuple<List<A>, List<A>> splitAt(int index) {
-    throw new IllegalStateException("To be implemented");
+    return splitAt(this, index, list()).eval();
+  }
+
+  private static <A> TailCall<Tuple<List<A>, List<A>>> splitAt(List<A> list, int index, List<A> acc) {
+    if (list.isEmpty()) {
+      return TailCall.ret(new Tuple<>(acc.reverse(), list()));
+    }
+    if (index < 0) {
+      return TailCall.ret(new Tuple<>(list(), list));
+    }
+    if (index == 0) {
+      return TailCall.ret(new Tuple<>(acc.reverse(), list));
+    }
+    return TailCall.sus(() -> splitAt(list.tail(), index - 1, acc.cons(list.head())));
   }
 
   @SuppressWarnings("rawtypes")
