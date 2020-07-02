@@ -46,7 +46,17 @@ public abstract class List<A> {
   }
 
   public Result<A> getAt(int index) {
-    throw new IllegalStateException("To be implemented");
+    return getAt(index, this).eval();
+  }
+
+  private static <A> TailCall<Result<A>> getAt(int index, List<A> list) {
+    if (list.isEmpty()) {
+      return TailCall.ret(Result.failure("Index out of bound"));
+    }
+    if (index == 0) {
+      return TailCall.ret(Result.of(list.head()));
+    }
+    return TailCall.sus(() -> getAt(index - 1, list.tail()));
   }
 
   @SuppressWarnings("rawtypes")
