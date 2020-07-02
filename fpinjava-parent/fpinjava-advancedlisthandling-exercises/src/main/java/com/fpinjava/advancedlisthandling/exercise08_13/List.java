@@ -66,7 +66,46 @@ public abstract class List<A> {
   }
 
   public Result<A> getAt__(int index) {
-    throw new IllegalStateException("To be implemented");
+    class Tuple<T, U> {
+      public final T _1;
+      public final U _2;
+
+      public Tuple(T t, U u) {
+        this._1 = Objects.requireNonNull(t);
+        this._2 = Objects.requireNonNull(u);
+      }
+
+      @Override
+      public String toString() {
+        return String.format("(%s,%s)", _1,  _2);
+      }
+
+      @Override
+      public boolean equals(Object o) {
+        if (!(o.getClass() == this.getClass()))
+          return false;
+        else {
+          @SuppressWarnings("rawtypes")
+          Tuple that = (Tuple) o;
+          return _2.equals(that._2);
+        }
+      }
+
+      @Override
+      public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + _1.hashCode();
+        result = prime * result + _2.hashCode();
+        return result;
+      }
+    }
+    Tuple<Result<A>, Integer> zero = new Tuple<>(Result.failure("Index out of bound"), -1);
+    Tuple<Result<A>, Integer> identity = new Tuple<>(Result.failure("Index out of bound"), index);
+    Tuple<Result<A>, Integer> rt = index < 0 || index >= length()
+        ? identity
+        : foldLeft(identity, zero, ta -> a -> ta._2 < 0 ? ta : new Tuple<>(Result.success(a), ta._2 - 1));
+    return rt._1;
   }
 
   @SuppressWarnings("rawtypes")
@@ -131,7 +170,7 @@ public abstract class List<A> {
 
     @Override
     public <B> B foldLeft(B identity, B zero, Function<B, Function<A, B>> f) {
-      throw new IllegalStateException("To be implemented");
+      return identity;
     }
 
     @Override
@@ -257,7 +296,13 @@ public abstract class List<A> {
 
     @Override
     public <B> B foldLeft(B identity, B zero, Function<B, Function<A, B>> f) {
-      throw new IllegalStateException("To be implemented");
+      return foldLeft(identity, zero, this, f).eval();
+    }
+
+    private <B> TailCall<B> foldLeft(B acc, B zero, List<A> list, Function<B, Function<A, B>> f) {
+      return list.isEmpty() || acc.equals(zero)
+          ? ret(acc)
+          : sus(() -> foldLeft(f.apply(acc).apply(list.head()), list.tail(), f));
     }
 
     @Override
