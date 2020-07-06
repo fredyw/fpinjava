@@ -125,7 +125,37 @@ public abstract class List<A> {
   }
 
   public Tuple<List<A>, List<A>> splitAt__(int index) {
-    throw new IllegalStateException("To be implemented");
+    class Tuple3<T, U, V> {
+      public final T _1;
+      public final U _2;
+      public final V _3;
+
+      public Tuple3(T t, U u, V v) {
+        this._1 = Objects.requireNonNull(t);
+        this._2 = Objects.requireNonNull(u);
+        this._3 = Objects.requireNonNull(v);
+      }
+
+      @Override
+      public boolean equals(Object o) {
+        if (!(o.getClass() == this.getClass()))
+          return false;
+        else {
+          @SuppressWarnings("rawtypes")
+          Tuple3 that = (Tuple3) o;
+          return _3.equals(that._3);
+        }
+      }
+    }
+    Tuple3<List<A>, List<A>, Integer> zero = new Tuple3<>(list(), list(), 0);
+    Tuple3<List<A>, List<A>, Integer> identity = new Tuple3<>(list(), list(), index);
+    Tuple<Tuple3<List<A>, List<A>, Integer>, List<A>> rt =
+        index <= 0 ?
+            new Tuple<>(identity, this) :
+            foldLeft(identity, zero, ta -> a -> ta._3 < 0 ?
+                ta :
+                new Tuple3<>(ta._1.cons(a), ta._2, ta._3 - 1));
+    return new Tuple<>(rt._1._1.reverse(), rt._2);
   }
 
   @SuppressWarnings("rawtypes")
@@ -190,7 +220,7 @@ public abstract class List<A> {
 
     @Override
     public <B> Tuple<B, List<A>> foldLeft(B identity, B zero, Function<B, Function<A, B>> f) {
-      throw new IllegalStateException("To be implemented");
+      return new Tuple<>(identity, list());
     }
 
     @Override
@@ -316,7 +346,13 @@ public abstract class List<A> {
 
     @Override
     public <B> Tuple<B, List<A>> foldLeft(B identity, B zero, Function<B, Function<A, B>> f) {
-      throw new IllegalStateException("To be implemented");
+      return foldLeft(identity, zero, this, f).eval();
+    }
+
+    private <B> TailCall<Tuple<B, List<A>>> foldLeft(B acc, B zero, List<A> list, Function<B, Function<A, B>> f) {
+      return list.isEmpty() || acc.equals(zero)
+          ? ret(new Tuple<>(acc, list))
+          : sus(() -> foldLeft(f.apply(acc).apply(list.head()), zero, list.tail(), f));
     }
 
     @Override
