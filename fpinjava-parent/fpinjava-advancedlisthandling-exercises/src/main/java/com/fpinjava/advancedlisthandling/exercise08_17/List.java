@@ -196,7 +196,7 @@ public abstract class List<A> {
   }
 
   public <B> Map<B, List<A>> groupBy(Function<A, B> f) {
-    return foldLeft(new Map<>(), map -> a ->
+    return foldLeft(Map.empty(), map -> a ->
         map.put(f.apply(a), map.get(f.apply(a)).getOrElse(list()).cons(a)));
   }
 
