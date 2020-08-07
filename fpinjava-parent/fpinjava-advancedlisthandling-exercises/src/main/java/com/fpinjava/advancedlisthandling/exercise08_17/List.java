@@ -184,11 +184,20 @@ public abstract class List<A> {
   }
 
   public <B> Map<B, List<A>> groupByImperative(Function<A, B> f) {
-    throw new IllegalStateException("To be implemented");
+    List<A> workList = this;
+    Map<B, List<A>> m = Map.empty();
+    while (!workList.isEmpty()) {
+      final B k = f.apply(workList.head());
+      List<A> rt = m.get(k).getOrElse(list()).cons(workList.head());
+      m = m.put(k, rt);
+      workList = workList.tail();
+    }
+    return m;
   }
 
   public <B> Map<B, List<A>> groupBy(Function<A, B> f) {
-    throw new IllegalStateException("To be implemented");
+    return foldLeft(new Map<>(), x -> y ->
+        x.put(f.apply(y), x.get(f.apply(y)).getOrElse(list()).cons(y)));
   }
 
   @SuppressWarnings("rawtypes")
