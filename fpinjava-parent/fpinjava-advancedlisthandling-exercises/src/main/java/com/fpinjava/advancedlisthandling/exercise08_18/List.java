@@ -517,6 +517,13 @@ public abstract class List<A> {
   }
 
   public static <A, S> List<A> unfold(S z, Function<S, Result<Tuple<A, S>>> f) {
-    throw new IllegalStateException("To be implemented");
+    return unfold(list(), z, f).eval();
+  }
+
+  public static <A, S> TailCall<List<A>> unfold(List<A> acc, S z, Function<S, Result<Tuple<A, S>>> f) {
+    Result<Tuple<A, S>> r = f.apply(z);
+    Result<TailCall<List<A>>> result =
+        r.map(rt -> sus(() -> unfold(acc.cons(rt._1), rt._2, f)));
+    return result.getOrElse(ret(acc));
   }
 }
