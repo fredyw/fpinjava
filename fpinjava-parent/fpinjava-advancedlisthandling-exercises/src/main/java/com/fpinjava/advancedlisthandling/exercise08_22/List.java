@@ -221,6 +221,13 @@ public abstract class List<A> {
     return sus(() -> splitListAt(acc.cons(list.head()), list.tail(), i - 1));
   }
 
+  public List<List<A>> divide(int depth) {
+    if (isEmpty()) {
+      return list(this);
+    }
+    return divide(list(this), depth);
+  }
+
   private static <A> List<List<A>> divide(List<List<A>> list, int depth) {
     if (list.head().length() < depth || depth < 2) {
       return list;
