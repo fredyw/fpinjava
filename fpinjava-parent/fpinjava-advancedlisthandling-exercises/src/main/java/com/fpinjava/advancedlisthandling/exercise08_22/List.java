@@ -211,11 +211,21 @@ public abstract class List<A> {
   }
 
   public List<List<A>> splitListAt(int i) {
-    throw new IllegalStateException("To be implemented");
+    return splitListAt(list(), this.reverse(), i).eval();
   }
 
-  public List<List<A>> divide(int depth) {
-    throw new IllegalStateException("To be implemented");
+  private TailCall<List<List<A>>> splitListAt(List<A> acc, List<A> list, int i) {
+    if (i == 0 || list.isEmpty()) {
+      return ret(List.list(list.reverse(), acc));
+    }
+    return sus(() -> splitListAt(acc.cons(list.head()), list.tail(), i - 1));
+  }
+
+  private static <A> List<List<A>> divide(List<List<A>> list, int depth) {
+    if (list.head().length() < depth || depth < 2) {
+      return list;
+    }
+    return divide(list.flatMap(x -> x.splitListAt(x.length() / 2)), depth / 2);
   }
 
   public <B> List<Tuple<Result<A>, Result<B>>> zipAll(List<B> s2) {
