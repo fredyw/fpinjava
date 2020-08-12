@@ -11,6 +11,7 @@ import com.fpinjava.common.Tuple3;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 import static com.fpinjava.common.TailCall.ret;
 import static com.fpinjava.common.TailCall.sus;
@@ -268,7 +269,18 @@ public abstract class List<A> {
   }
 
   public <B> Result<List<B>> parMap(ExecutorService es, Function<A, B> g) {
-    throw new IllegalStateException("To be implemented");
+    try {
+      List<B> list = map(x -> es.submit(() -> g.apply(x))).map(x -> {
+        try {
+          return x.get();
+        } catch (InterruptedException | ExecutionException e) {
+          throw new RuntimeException(e);
+        }
+      });
+      return Result.success(list);
+    } catch (Exception e) {
+      return Result.failure(e);
+    }
   }
 
   @SuppressWarnings("rawtypes")
