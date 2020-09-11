@@ -61,12 +61,12 @@ abstract class Stream<A> {
 
     @Override
     public Stream<A> take(int n) {
-      throw new IllegalStateException("To be implemented");
+      return this;
     }
 
     @Override
     public Stream<A> drop(int n) {
-      throw new IllegalStateException("To be implemented");
+      return this;
     }
   }
 
@@ -110,12 +110,21 @@ abstract class Stream<A> {
 
     @Override
     public Stream<A> take(int n) {
-      throw new IllegalStateException("To be implemented");
+      return n <= 0
+          ? empty()
+          : cons(head, () -> tail().take(n - 1));
     }
 
     @Override
     public Stream<A> drop(int n) {
-      throw new IllegalStateException("To be implemented");
+      return drop(this, n).eval();
+    }
+
+    private TailCall<Stream<A>> drop(Stream<A> s, int n) {
+      if (s.isEmpty() || n == 0) {
+        return ret(s);
+      }
+      return sus(() -> drop(s.tail(), n - 1));
     }
   }
 
